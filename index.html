@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ResQMec - Connecting Farmers, Vehicles, and Mechanics</title>
+    <title>RescueMech - Connecting Farmers, Vehicles, and Mechanics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <style>
         :root {
-            --primary-color: #2ECC71;
-            --secondary-color: #F39C12;
-            --text-color: #34495E;
-            --bg-color: #ECF0F1;
+            --primary-color: #00A0E3;
+            --secondary-color: #000000;
+            --text-color: #333333;
+            --bg-color: #FFFFFF;
+            --accent-color: #FFA500;
         }
 
         body {
@@ -21,23 +24,27 @@
             background-color: var(--bg-color);
         }
 
+        .footer a {
+            text-decoration: none;
+        }
+        
         .navbar {
             background-color: rgba(255, 255, 255, 0.95);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
+        .navbar-brand img {
+            max-height: 40px;
+            width: auto;
         }
 
         .nav-link {
+            color: var(--secondary-color) !important;
             font-weight: 600;
-            color: var(--text-color) !important;
             transition: color 0.3s ease;
         }
 
-        .nav-link:hover {
+        .nav-link:hover, .nav-link:focus {
             color: var(--primary-color) !important;
         }
 
@@ -45,7 +52,7 @@
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('fut.jpg');
             background-size: cover;
             background-position: center;
-            height: 80vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -53,19 +60,9 @@
             color: white;
         }
 
-        .hero h1 {
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-weight: 300;
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
         .cta-button {
-            background-color: var(--secondary-color);
+            background-color: var(--accent-color);
+            color: var(--bg-color);
             border: none;
             padding: 12px 30px;
             font-weight: 600;
@@ -74,7 +71,7 @@
         }
 
         .cta-button:hover {
-            background-color: #E67E22;
+            background-color: #FF8C00;
             transform: translateY(-3px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
@@ -96,15 +93,16 @@
             background-color: var(--primary-color);
         }
 
-        .feature-card {
+        .feature-card, .user-card {
             background-color: white;
             border-radius: 15px;
             padding: 2rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            height: 100%;
         }
 
-        .feature-card:hover {
+        .feature-card:hover, .user-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
@@ -115,216 +113,66 @@
             margin-bottom: 1rem;
         }
 
-        .how-it-works-card {
-            background-color: white;
+        #map {
+            height: 400px;
+            width: 100%;
             border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            height: 100%;
         }
 
-        .how-it-works-card .step-number {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--primary-color);
+        .testimonial-card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
             margin-bottom: 1rem;
         }
 
-        .contact-form {
-            background-color: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-control {
-            border-radius: 50px;
-            padding: 0.75rem 1.5rem;
-        }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
-            border-color: var(--primary-color);
-        }
-
         .footer {
-            background-color: #2C3E50;
-            color: white;
+            background-color: var(--secondary-color);
+            color: var(--bg-color);
             padding: 3rem 0;
         }
 
         .social-icons a {
-            color: white;
+            color: var(--bg-color);
             font-size: 1.5rem;
             margin: 0 10px;
             transition: color 0.3s ease;
         }
 
         .social-icons a:hover {
-            color: var(--secondary-color);
+            color: var(--accent-color);
         }
-        .app-download {
-        background-color: #2C3E50;
-        color: white;
-        padding: 5rem 0;
-    }
 
-    .app-download h2 {
-        color: white;
-    }
+        .app-screenshot {
+            max-width: 300px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
 
-    .app-download .section-title::after {
-        background-color: var(--secondary-color);
-    }
+        .store-badge {
+            height: 60px;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
 
-    .app-screenshot {
-        max-width: 300px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .store-badge {
-        height: 60px;
-        margin: 10px;
-        transition: transform 0.3s ease;
-    }
-
-    .store-badge:hover {
-        transform: scale(1.05);
-    }
-    .vehicles-showcase {
-        padding: 5rem 0;
-        background-color: #f8f9fa;
-    }
-
-    .vehicle-card {
-        position: relative;
-        overflow: hidden;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
-    }
-
-    .vehicle-card img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .vehicle-card:hover img {
-        transform: scale(1.05);
-    }
-
-    .vehicle-info {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 15px;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-    }
-
-    .vehicle-card:hover .vehicle-info {
-        transform: translateY(0);
-    }
-
-    .vehicle-info h3 {
-        margin: 0;
-        font-size: 1.2rem;
-    }
-
-    .vehicle-info p {
-        margin: 5px 0 0;
-        font-size: 0.9rem;
-    }
-    :root {
-    --primary-color: #00A0E3; /* The blue color from the logo */
-    --secondary-color: #000000; /* Black from the logo */
-    --text-color: #333333;
-    --bg-color: #FFFFFF;
-}
-
-.navbar {
-    background-color: var(--bg-color);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-brand img {
-    max-height: 40px;
-    width: auto;
-}
-
-.nav-link {
-    color: var(--secondary-color) !important;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.nav-link:hover, .nav-link:focus {
-    color: var(--primary-color) !important;
-}
-
-/* Update other color references throughout your CSS */
-.cta-button {
-    background-color: var(--primary-color);
-    color: var(--bg-color);
-    border: none;
-}
-
-.cta-button:hover {
-    background-color: #0082B5; /* A slightly darker shade of the blue */
-}
-
-.section-title::after {
-    background-color: var(--primary-color);
-}
-
-/* ... update other color references as needed ... */
-.footer {
-    background-color: var(--secondary-color);
-    color: var(--bg-color);
-}
-
-.footer h5 {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-.footer a {
-    color: var(--bg-color);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    color: var(--primary-color);
-}
-
-.social-icons a {
-    font-size: 1.2rem;
-    margin-right: 10px;
-}
-
-.btn-group .btn {
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-
-.btn-group .btn.active {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
+        .store-badge:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="rescue.png" alt="Rescue Mech Logo" height="40">        
+                <img src="rescue.png" alt="RescueMech Logo" height="40">
                 <span class="brand-text">RescueMech</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -336,13 +184,13 @@
                         <a class="nav-link" href="#features">Features</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#app-download">Download App</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#vehicles-showcase">Our Services</a>
+                        <a class="nav-link" href="#users">For Users</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Contact</a>
@@ -355,8 +203,8 @@
     <header class="hero">
         <div class="container">
             <h1 class="display-4 mb-4">Revolutionizing Agricultural Transportation</h1>
-            <p class="lead mb-4">Connect farmers, vehicles, and mechanics with ResQMec - Your all-in-one solution</p>
-            <a href="#" class="btn btn-warning cta-button">Get Started</a>
+            <p class="lead mb-4">Connect farmers, vehicles, and mechanics with RescueMech - Your all-in-one solution</p>
+            <a href="#" class="btn cta-button">Get Started</a>
         </div>
     </header>
 
@@ -389,70 +237,63 @@
         </div>
     </section>
 
-    <section id="app-download" class="app-download">
+    <section id="users" class="py-5 bg-light">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center mb-4 mb-md-0">
-                    <img src="rescue1.png" alt="ResQMec App Screenshot" class="app-screenshot img-fluid">
-                </div>
-                <div class="col-md-6">
-                    <h2 class="section-title">Get the RescueMech App</h2>
-                    <p class="lead mb-4">Download our app now and start connecting with farmers, vehicle owners, and mechanics in your area!</p>
-                    <div class="d-flex justify-content-center justify-content-md-start">
-                        <a href="#" target="_blank" rel="noopener noreferrer">
-                            <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" class="store-badge">
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer">
-                            <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" alt="Download on the App Store" class="store-badge">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="vehicles-showcase" class="vehicles-showcase">
-        <div class="container">
-            <h2 class="text-center section-title mb-5">Connecting Farmers to Markets</h2>
-            <div class="row mb-5">
-                <div class="col-lg-8 mx-auto">
-                    <p class="text-center lead">
-                        RescueMech revolutionizes agricultural logistics by connecting farmers directly with transportation services. Our app enables farmers to easily book various types of vehicles, ensuring their produce reaches markets efficiently and in prime condition. From small pickups to large trucks, we provide options for all kinds of agricultural goods.
-                    </p>
-                </div>
-            </div>
+            <h2 class="text-center section-title">For Our Users</h2>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="vehicle-card">
-                        <img src="stok.webp" alt="Truck with vegetables">
-                        <div class="vehicle-info">
-                            <h3>Fresh Vegetable Transport</h3>
-                            <p>Ensuring quick delivery of farm-fresh vegetables to local markets</p>
-                        </div>
+                <div class="col-md-4 mb-4">
+                    <div class="user-card">
+                        <h3>Farmers</h3>
+                        <ul>
+                            <li>Easy access to transportation</li>
+                            <li>Expanded market reach</li>
+                            <li>Reduced produce spoilage</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="vehicle-card">
-                        <img src="stok1.webp" alt="Pickup truck with fruits">
-                        <div class="vehicle-info">
-                            <h3>Fruit Delivery Service</h3>
-                            <p>Specialized vehicles for transporting delicate fruits safely</p>
-                        </div>
+                <div class="col-md-4 mb-4">
+                    <div class="user-card">
+                        <h3>Vehicle Owners</h3>
+                        <ul>
+                            <li>Increased business opportunities</li>
+                            <li>Wider customer base</li>
+                            <li>Efficient route planning</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="vehicle-card">
-                        <img src="stok2.jpg" alt="Tractor with grain trailer">
-                        <div class="vehicle-info">
-                            <h3>Grain Transportation</h3>
-                            <p>Large capacity vehicles for efficient grain transport</p>
-                        </div>
+                <div class="col-md-4 mb-4">
+                    <div class="user-card">
+                        <h3>Mechanics</h3>
+                        <ul>
+                            <li>New client opportunities</li>
+                            <li>On-demand service requests</li>
+                            <li>Expand your service area</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <section id="impact" class="py-5">
+        <div class="container">
+            <h2 class="text-center section-title">Our Impact</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <h3 class="display-4 text-primary">10,000+</h3>
+                    <p>Successful Deliveries</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h3 class="display-4 text-primary">5,000+</h3>
+                    <p>Registered Users</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h3 class="display-4 text-primary">30%</h3>
+                    <p>Reduction in Food Waste</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section id="how-it-works" class="py-5 bg-light">
         <div class="container">
@@ -477,6 +318,104 @@
                         <div class="step-number">03</div>
                         <h5>Transact</h5>
                         <p>Book services, communicate, and complete transactions securely</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="map-section" class="py-5">
+        <div class="container">
+            <h2 class="text-center section-title">Our Coverage</h2>
+            <div id="map" style="height: 400px;"></div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center section-title">What Our Users Say</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card text-center">
+                        <img src="avata.jpeg" alt="Farmer" class="testimonial-img">
+                        <h5>Mulangira</h5>
+                        <p class="text-muted">Farmer</p>
+                        <p>"RescueMech has transformed how I transport my produce. It's reliable and efficient!"</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card text-center">
+                        <img src="avata.jpeg" alt="Driver" class="testimonial-img">
+                        <h5>Isaiah</h5>
+                        <p class="text-muted">Vehicle Owner</p>
+                        <p>"My market expanded significantly since I started using RescueMech. Highly recommended!"</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card text-center">
+                        <img src="avata.jpeg" alt="Mechanic" class="testimonial-img">
+                        <h5>Ssemakula</h5>
+                        <p class="text-muted">Mechanic</p>
+                        <p>"The on-demand service requests have really helped me expand my client base."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="app-download" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center mb-4 mb-md-0">
+                    <img src="rescue1.png" alt="RescueMech App Screenshot" class="app-screenshot img-fluid">
+                </div>
+                <div class="col-md-6">
+                    <h2 class="section-title">Get the RescueMech App</h2>
+                    <p class="lead mb-4">Download our app now and start connecting with farmers, vehicle owners, and mechanics in your area!</p>
+                    <div class="d-flex justify-content-center justify-content-md-start">
+                        <a href="#" target="_blank" rel="noopener noreferrer">
+                            <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" class="store-badge">
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer">
+                            <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" alt="Download on the App Store" class="store-badge">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center section-title">Frequently Asked Questions</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    How does RescueMech work?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    RescueMech connects farmers with vehicle owners and mechanics. Farmers can book transportation for their produce, vehicle owners can find new clients, and mechanics can offer their services when needed.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Is RescueMech available in my area?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    RescueMech is currently expanding its coverage. Check our app or website for the most up-to-date information on areas we serve.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add more FAQ items as needed -->
                     </div>
                 </div>
             </div>
@@ -514,8 +453,9 @@
                     <h5 class="mb-3">Navigation</h5>
                     <ul class="list-unstyled">
                         <li><a href="#features" class="text-light">Features</a></li>
+                        <li><a href="#users" class="text-light">For Users</a></li>
                         <li><a href="#how-it-works" class="text-light">How It Works</a></li>
-                        <li><a href="#vehicles-showcase" class="text-light">Our Services</a></li>
+                        <li><a href="#testimonials" class="text-light">Testimonials</a></li>
                         <li><a href="#contact" class="text-light">Contact</a></li>
                     </ul>
                 </div>
@@ -571,35 +511,57 @@
             });
         });
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
-    <script>
         function changeLanguage(lang) {
-            // Here you would implement the logic to change the language
             console.log('Changing language to: ' + lang);
-            // For demonstration, we're just updating the active state of the buttons
             document.querySelectorAll('.btn-group .btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-            // In a real implementation, you would update the page content based on the selected language
         }
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message. We will get back to you soon!');
+            this.reset();
+        });
+    
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    
+        function changeLanguage(lang) {
+            console.log('Changing language to: ' + lang);
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    
+        // Leaflet map initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            var map = L.map('map').setView([0.3476, 32.5825], 7); // Coordinates for Kampala, Uganda
+    
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+    
+            var marker = L.marker([0.3476, 32.5825]).addTo(map);
+            marker.bindPopup("<b>RescueMech Headquarters</b><br>Kampala, Uganda").openPopup();
+    
+            // Example coverage area (you can customize this)
+            var circle = L.circle([0.3476, 32.5825], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.2,
+                radius: 100000 // 100 km radius
+            }).addTo(map);
+        });
     </script>
 </body>
 </html>
